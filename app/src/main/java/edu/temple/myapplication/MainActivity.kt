@@ -1,9 +1,14 @@
 package edu.temple.myapplication
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.IBinder
+import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
@@ -63,4 +68,24 @@ onStopClicked()
         getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit().putInt(KEY_SAVED_COUNT, currentValue).apply()
         Toast.makeText(this, "Stop clicked", Toast.LENGTH_SHORT).show()
     }
+
+    private var currentCount = DEFAULT_COUNT
+
+    private val timerHandler = Handler(Looper.getMainLooper()) { msg ->
+        currentCount = msg.what
+        true
+    }
+    private var timerBinder: TimerService.TimerBinder? = null
+
+    private val connection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            timerBinder = service as TimerService.TimerBinder
+            timerBinder?.setHandler(timerHandler)
+        }
+        override fun onServiceDisconnected(name: ComponentName?) {
+            timerBinder = null
+        }
+    }
+
+
 }
