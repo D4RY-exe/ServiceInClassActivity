@@ -21,9 +21,9 @@ import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
 
-    private val PREFS_NAME = "countdown_prefs"
-    private val KEY_SAVED_COUNT = "saved_count"
-    private val DEFAULT_COUNT = 100
+    private val prefsName = "countdown_prefs"
+    private val savedCount = "saved_count"
+    private val defaultCount = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,10 +52,10 @@ onStopClicked()
         return true
     }
     private fun onStartClicked() {
-        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-        val savedCount = prefs.getInt(KEY_SAVED_COUNT, -1)
+        val prefs = getSharedPreferences(prefsName, MODE_PRIVATE)
+        val savedCount = prefs.getInt(savedCount, -1)
         val wasPaused = prefs.getBoolean("was_paused", false)
-        val startValue = if (wasPaused && savedCount > 0) savedCount else DEFAULT_COUNT
+        val startValue = if (wasPaused && savedCount > 0) savedCount else defaultCount
 
         val serviceIntent = Intent(this, TimerService::class.java)
         bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE)
@@ -69,16 +69,15 @@ onStopClicked()
 
         if (timerBinder?.paused == true) {
             val currentValue = currentCount
-            getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+            getSharedPreferences(prefsName, MODE_PRIVATE)
                 .edit()
-                .putInt(KEY_SAVED_COUNT, currentValue)
+                .putInt(savedCount, currentValue)
                 .putBoolean("was_paused", true)
                 .apply()
             Toast.makeText(this, "Stop clicked", Toast.LENGTH_SHORT).show()
         }
     }
-
-    private var currentCount = DEFAULT_COUNT
+    private var currentCount = defaultCount
 
     private val timerHandler = Handler(Looper.getMainLooper()) { msg ->
         currentCount = msg.what
