@@ -120,6 +120,7 @@ class TimerService : Service() {
             getSharedPreferences("countdown_prefs", MODE_PRIVATE)
                 .edit()
                 .remove("saved_count")
+                .remove("was_paused")
                 .apply() }
         super.onDestroy()
         Log.d("TimerService status", "Destroyed")
