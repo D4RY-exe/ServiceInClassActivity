@@ -53,7 +53,7 @@ onStopClicked()
     }
     private fun onStartClicked() {
         val prefs = getSharedPreferences(prefsName, MODE_PRIVATE)
-        val savedCount = prefs.getInt(savedCount, -1)
+        val savedCount = prefs.getInt(savedCount, 0)
         val wasPaused = prefs.getBoolean("was_paused", false)
         val startValue = if (wasPaused && savedCount > 0) savedCount else defaultCount
 
