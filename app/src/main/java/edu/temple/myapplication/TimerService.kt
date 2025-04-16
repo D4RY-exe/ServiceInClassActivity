@@ -18,6 +18,8 @@ class TimerService : Service() {
 
     private var paused = false
 
+    var currentCount = 0
+
     inner class TimerBinder : Binder() {
 
         // Check if Timer is already running
@@ -89,9 +91,8 @@ class TimerService : Service() {
             try {
                 for (i in startValue downTo 1)  {
                     Log.d("Countdown", i.toString())
-
+                    currentCount = i
                     timerHandler?.sendEmptyMessage(i)
-
                     while (paused);
                     sleep(1000)
 
@@ -115,8 +116,12 @@ class TimerService : Service() {
     }
 
     override fun onDestroy() {
+        if (!paused) {
+            getSharedPreferences("countdown_prefs", MODE_PRIVATE)
+                .edit()
+                .remove("saved_count")
+                .apply() }
         super.onDestroy()
-
         Log.d("TimerService status", "Destroyed")
     }
 
